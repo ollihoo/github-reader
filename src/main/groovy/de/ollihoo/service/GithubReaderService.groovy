@@ -53,10 +53,10 @@ class GithubReaderService {
 
 
     private Employee parseEmployee(githubUser) {
-        def user = new JsonSlurper().parse(githubUser)
+        def user = new JsonSlurper().parseText(githubUser)
         String name = user.name ?: user.login
         def repositories = getUsersRepositories(user)
-        Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name)
+        Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name, login: user.login)
         repositories.each { repository ->
             employee.setWorksOn(repository)
             repository.languages.each { language ->
