@@ -24,6 +24,17 @@ get your personal access token (see https://developer.github.com/v3/#authenticat
 * to get connection to your neo4j database, set password: -Dneo4j.password=[YOUR_PASSWORD]
 * set your access token by using -Dgithub.accessToken=[YOUR_ACCESS_TOKEN]
 
+### Fill database
+
+Simply go to this page: http://localhost:8080/internal/getdata
+
+### Get a list of all members in given organization
+
+http://localhost:8080/employees
+
+### Search for a certain language
+
+http://localhost:8080/language
 
 
 
