@@ -14,13 +14,15 @@ How to get data from github and work on data with neo4J
 
 By default, there is a members list loaded by github (https:///api.github.com/orgs/github/members)
 I recommend to download this file once and to add this as a source file.
-The reason is to save requests to github. There are possibilities to fix that, but that's not implemented yet.
+The reason is to save requests to github. If you want to do more than 50 requests per hour,
+get your personal access token (see https://developer.github.com/v3/#authentication)
 
 ### Start application
 
 * Application is the main file.
-* for setting members list, set -DgithubReaderService.membersResource=file://<YOURPATH>
-* to get connection to your neo4j database, set password: -Dneo4j.password=<YOURPASSWORD>
+* for setting members list, set -DgithubReaderService.membersResource=file://[YOUR_PATH]
+* to get connection to your neo4j database, set password: -Dneo4j.password=[YOUR_PASSWORD]
+* set your access token by using -Dgithub.accessToken=[YOUR_ACCESS_TOKEN]
 
 
 

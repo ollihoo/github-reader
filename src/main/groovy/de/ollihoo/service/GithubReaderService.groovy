@@ -60,7 +60,7 @@ class GithubReaderService {
 
 
     private Employee parseEmployee(githubMemberJson) {
-        def user = jsonRequestHelper.getAndParseJson(new URI(githubMemberJson.url))
+        def user = jsonRequestHelper.getAndParseJson(githubMemberJson.url)
         String name = user.name ?: user.login
         def repositories = getUsersRepositories(user)
         Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name, login: user.login)
@@ -75,7 +75,7 @@ class GithubReaderService {
     }
 
     private List<Repository> getUsersRepositories(githubUserJson) {
-        def repos = jsonRequestHelper.getAndParseJson(new URI(githubUserJson."repos_url"))
+        def repos = jsonRequestHelper.getAndParseJson(githubUserJson."repos_url")
         def repositories = repos.collect { repo ->
             String repoName = repo.name
             def languages = getLanguages(repo)
@@ -92,7 +92,7 @@ class GithubReaderService {
     }
 
     private List<Language> getLanguages(githubRepositoryJson) {
-        def languages = jsonRequestHelper.getAndParseJson(new URI(githubRepositoryJson."languages_url"))
+        def languages = jsonRequestHelper.getAndParseJson(githubRepositoryJson."languages_url")
         languages.keySet().collect { languageName ->
             languageRepository.findByName(languageName) ?:
                     languageRepository.save(new Language(name: languageName), 0)
