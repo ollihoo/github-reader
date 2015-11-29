@@ -21,7 +21,7 @@ class GithubReaderService {
     private static final Logger LOG = LoggerFactory.getLogger(GithubReaderService)
 
     @Value('${githubReaderService.membersResource}')
-    private String membersResource
+    String membersResource
 
     @Autowired
     EmployeeRepository employeeRepository
@@ -29,10 +29,18 @@ class GithubReaderService {
     RepositoryRepository repositoryRepository
     @Autowired
     LanguageRepository languageRepository
+    @Autowired
+    JsonRequestHelper jsonRequestHelper
 
     List<Employee> loadMembers() {
         LOG.info("Loading members from ${membersResource}...")
-        URL resource = new URL(membersResource)
+        URL resource
+        try {
+            resource = new URL(membersResource)
+        } catch (MalformedURLException e) {
+            LOG.warn("Attention: no member resource set. Check your configuration (githubReaderService.membersResource)")
+            return []
+        }
         def members = new JsonSlurper().parse(resource)
         try {
             loadUnknownEmployees(members)
@@ -46,14 +54,13 @@ class GithubReaderService {
             employeeRepository.findByLogin(member.login) == null
         }.collect { member ->
             LOG.info("Start parsing data for member ${member.login}")
-            String githubUserData = doRequestOn(new URI(member.url))
-            parseEmployee(githubUserData)
+            parseEmployee(member)
         }
     }
 
 
-    private Employee parseEmployee(githubUser) {
-        def user = new JsonSlurper().parseText(githubUser)
+    private Employee parseEmployee(githubMemberJson) {
+        def user = jsonRequestHelper.getAndParseJson(new URI(githubMemberJson.url))
         String name = user.name ?: user.login
         def repositories = getUsersRepositories(user)
         Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name, login: user.login)
@@ -68,7 +75,7 @@ class GithubReaderService {
     }
 
     private List<Repository> getUsersRepositories(githubUserJson) {
-        def repos = getAndParseJson(new URI(githubUserJson."repos_url"))
+        def repos = jsonRequestHelper.getAndParseJson(new URI(githubUserJson."repos_url"))
         def repositories = repos.collect { repo ->
             String repoName = repo.name
             def languages = getLanguages(repo)
@@ -85,25 +92,11 @@ class GithubReaderService {
     }
 
     private List<Language> getLanguages(githubRepositoryJson) {
-        def languages = getAndParseJson(new URI(githubRepositoryJson."languages_url"))
+        def languages = jsonRequestHelper.getAndParseJson(new URI(githubRepositoryJson."languages_url"))
         languages.keySet().collect { languageName ->
             languageRepository.findByName(languageName) ?:
                     languageRepository.save(new Language(name: languageName), 0)
         }
-    }
-
-    private getAndParseJson(URI jsonUri) {
-        new JsonSlurper().parseText(doRequestOn(jsonUri))
-    }
-
-    private String doRequestOn(URI uri) throws HttpClientErrorException {
-        RestTemplate restTemplate = new RestTemplate()
-        HttpHeaders headers = new HttpHeaders()
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers)
-
-        ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
-        response.getBody()
     }
 
 }

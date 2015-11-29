@@ -1,0 +1,12 @@
+[
+  {
+    "login": "abc",
+    "id": 12,
+    "url": "https://api.github.com/users/abc"
+  },
+  {
+    "login": "def",
+    "id": 18,
+    "url": "https://api.github.com/users/def"
+  }
+]
