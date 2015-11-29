@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Get Data from Github</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link type="text/css" rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+    <h2>Qualification List</h2>
+
+    <div>
+        <div class="table sameLine headline">Angestellter</div>
+        <div class="table sameLine headline">Angewandte Sprache</div>
+        <div class="table sameLine headline">Anzahl der bearbeiteten Projekte</div>
+    </div>
+    <div th:each="qualification, row: ${qualifications}">
+       <div class="table sameLine" th:text="${qualification.employee}">Angestellter X</div>
+       <div class="table sameLine" th:text="${qualification.language}">Sprache A</div>
+       <div class="table sameLine" th:text="${qualification.projectAmount}">x Projekte</div>
+    </div>
+</div>
+
+</body>
+</html>

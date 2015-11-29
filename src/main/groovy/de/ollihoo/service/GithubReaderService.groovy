@@ -26,7 +26,7 @@ class GithubReaderService {
     @Autowired
     LanguageRepository languageRepository
 
-    List<Employee> getCodecentricEmployees() {
+    List<Employee> getPublicEmployees() {
 //        URL membersEndpoint = new URL(getMembersEndpoint())
         def membersFile = this.getClass().getResource("/members.json")
         def members = new JsonSlurper().parse(membersFile)

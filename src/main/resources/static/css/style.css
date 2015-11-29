@@ -1,0 +1,15 @@
+.table {
+    width: 150px;
+    padding: 5;
+    border-width: 1px;
+    border-style: dotted;
+}
+
+.sameLine {
+    display: inline-block;
+}
+
+.headline {
+    font-weight: bold;
+    background-color: #eeeeee;
+}

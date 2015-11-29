@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Get Data from Github</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link type="text/css" rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+  <h2>Get Data From Github</h2>
+  <div th:each="employee, row: ${employees}" th:text="${employee.name}">Angestellter X</div>
+</div>
+
+</body>
+</html>
