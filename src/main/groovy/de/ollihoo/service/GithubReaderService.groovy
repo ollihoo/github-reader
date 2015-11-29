@@ -10,6 +10,7 @@ import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -19,6 +20,9 @@ import org.springframework.web.client.RestTemplate
 class GithubReaderService {
     private static final Logger LOG = LoggerFactory.getLogger(GithubReaderService)
 
+    @Value('${githubReaderService.membersResource}')
+    private String membersResource
+
     @Autowired
     EmployeeRepository employeeRepository
     @Autowired
@@ -27,9 +31,9 @@ class GithubReaderService {
     LanguageRepository languageRepository
 
     List<Employee> getPublicEmployees() {
-//        URL membersEndpoint = new URL(getMembersEndpoint())
-        def membersFile = this.getClass().getResource("/members.json")
-        def members = new JsonSlurper().parse(membersFile)
+        LOG.info("Resource: $membersResource")
+        URI resource = new URI(membersResource)
+        def members = new JsonSlurper().parse(resource.toURL())
         getEmployees(members)
     }
 
@@ -54,7 +58,6 @@ class GithubReaderService {
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers)
         try {
             ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
-            LOG.info("ANSWER: ${}")
             return response.getBody()
         } catch (HttpClientErrorException e) {
             LOG.warn("No data available: ${e.message}")

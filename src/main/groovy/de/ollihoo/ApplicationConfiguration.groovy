@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @ConfigurationProperties
 class ApplicationConfiguration extends Neo4jConfiguration {
 
-    @Value("neo4jServerUrl")
-    String neo4jServerUrl
+    @Value('${neo4j.serverUrl}')
+    private String neo4jServerUrl
 
-    @Value("neo4jUser")
-    String neo4jUser
+    @Value('${neo4j.user}')
+    private String neo4jUser
 
-    @Value("neo4jPassword")
-    String neo4jPassword
+    @Value('${neo4j.password}')
+    private String neo4jPassword
 
     @Override @Bean
     Neo4jServer neo4jServer() {
