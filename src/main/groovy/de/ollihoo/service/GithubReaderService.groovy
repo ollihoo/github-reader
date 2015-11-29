@@ -30,80 +30,45 @@ class GithubReaderService {
     @Autowired
     LanguageRepository languageRepository
 
-    List<Employee> getPublicEmployees() {
-        LOG.info("Resource: $membersResource")
-        URI resource = new URI(membersResource)
-        def members = new JsonSlurper().parse(resource.toURL())
-        getEmployees(members)
-    }
-
-    private List<Employee> getEmployees(members) {
-        members.findAll { member ->
-            employeeRepository.findByLogin(member.login) == null
-        }.collect { member ->
-            String result = doRequestOn(new URI(member.url))
-            if (result) {
-                LOG.info(result)
-            } else {
-                LOG.warn("no result on ${member.url}")
-            }
-        }
-        []
-    }
-
-    private String doRequestOn(URI uri) {
-        RestTemplate restTemplate = new RestTemplate()
-        HttpHeaders headers = new HttpHeaders()
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers)
+    List<Employee> loadMembers() {
+        LOG.info("Loading members from ${membersResource}...")
+        URL resource = new URL(membersResource)
+        def members = new JsonSlurper().parse(resource)
         try {
-            ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
-            return response.getBody()
-        } catch (HttpClientErrorException e) {
-            LOG.warn("No data available: ${e.message}")
+            loadUnknownEmployees(members)
+        } catch (all) {
+            LOG.warn("Could not parse all data: ${all.message}")
         }
-        null
     }
 
-
-    private List<Employee> getEmployeesOrig(members) {
+    private List<Employee> loadUnknownEmployees(members) {
         members.findAll { member ->
             employeeRepository.findByLogin(member.login) == null
         }.collect { member ->
-            LOG.info("Parsing member ${member.login}")
-            try {
-
-                RestTemplate restTemplate = new RestTemplate()
-                HttpHeaders headers = new HttpHeaders();
-                headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-                HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-                def uri = new URI(member.url)
-                String answer = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
-
-                def user = new JsonSlurper().parseText(answer)
-//                URL userUrl = new URL(member.url)
-//                def user = new JsonSlurper().parse(userUrl)
-                String name = user.name ?: user.login
-                def repositories = getUsersRepositories(user)
-                Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name)
-                repositories.each { repository ->
-                    employee.setWorksOn(repository)
-                    repository.languages.each { language ->
-                        employee.usesLanguage(language)
-                    }
-                }
-                employeeRepository.save(employee, 1)
-                employee
-            } catch (all) {
-                LOG.warn("Interruption of update process; reason: " + all.message)
-                null
-            }
-        }.findAll { employee -> employee != null }
+            LOG.info("Start parsing data for member ${member.login}")
+            String githubUserData = doRequestOn(new URI(member.url))
+            parseEmployee(githubUserData)
+        }
     }
 
-    private List<Repository> getUsersRepositories(user) {
-        URL reposUrl = new URL(getRepositoryEndpoint(user))
-        def repos = new JsonSlurper().parse(reposUrl)
+
+    private Employee parseEmployee(githubUser) {
+        def user = new JsonSlurper().parse(githubUser)
+        String name = user.name ?: user.login
+        def repositories = getUsersRepositories(user)
+        Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name)
+        repositories.each { repository ->
+            employee.setWorksOn(repository)
+            repository.languages.each { language ->
+                employee.usesLanguage(language)
+            }
+        }
+        employeeRepository.save(employee, 1)
+        employee
+    }
+
+    private List<Repository> getUsersRepositories(githubUserJson) {
+        def repos = getAndParseJson(new URI(githubUserJson."repos_url"))
         def repositories = repos.collect { repo ->
             String repoName = repo.name
             def languages = getLanguages(repo)
@@ -119,23 +84,26 @@ class GithubReaderService {
         repositories
     }
 
-
-    private List<Language> getLanguages(repo) {
-        URL languagesUrl = new URL(getLanguagesEndpoint(repo))
-        def languages = new JsonSlurper().parse(languagesUrl)
+    private List<Language> getLanguages(githubRepositoryJson) {
+        def languages = getAndParseJson(new URI(githubRepositoryJson."languages_url"))
         languages.keySet().collect { languageName ->
             languageRepository.findByName(languageName) ?:
                     languageRepository.save(new Language(name: languageName), 0)
         }
     }
 
-    private getRepositoryEndpoint(githubUser) {
-        githubUser."repos_url"
+    private getAndParseJson(URI jsonUri) {
+        new JsonSlurper().parseText(doRequestOn(jsonUri))
     }
 
-    private getLanguagesEndpoint(githubRepository) {
-        githubRepository."languages_url"
-    }
+    private String doRequestOn(URI uri) throws HttpClientErrorException {
+        RestTemplate restTemplate = new RestTemplate()
+        HttpHeaders headers = new HttpHeaders()
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers)
 
+        ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
+        response.getBody()
+    }
 
 }

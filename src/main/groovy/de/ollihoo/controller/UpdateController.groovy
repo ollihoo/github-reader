@@ -16,7 +16,7 @@ class UpdateController {
 
     @RequestMapping(value = "/internal/getdata", method = RequestMethod.GET)
     String index(Model model) {
-        List<Employee> employees = githubReaderService.publicEmployees
+        List<Employee> employees = githubReaderService.loadMembers()
         model.addAttribute("employees", employees)
         "getdata"
     }
