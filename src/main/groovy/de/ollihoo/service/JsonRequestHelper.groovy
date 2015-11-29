@@ -1,6 +1,8 @@
 package de.ollihoo.service
 
 import groovy.json.JsonSlurper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -12,6 +14,7 @@ import org.springframework.web.client.RestTemplate
 
 @Component
 class JsonRequestHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(JsonRequestHelper)
 
     public getAndParseJson(URI jsonUri) {
         new JsonSlurper().parseText(doRequestOn(jsonUri))
@@ -23,6 +26,7 @@ class JsonRequestHelper {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers)
 
+        LOG.info("Request: " + uri)
         ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
         response.getBody()
     }
