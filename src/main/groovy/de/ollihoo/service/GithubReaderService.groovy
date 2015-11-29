@@ -73,7 +73,6 @@ class GithubReaderService {
                 RestTemplate restTemplate = new RestTemplate()
                 HttpHeaders headers = new HttpHeaders();
                 headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-                headers.add("Authentication", "ollihoo:reiser2012")
                 HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
                 def uri = new URI(member.url)
                 String answer = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
