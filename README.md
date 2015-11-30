@@ -19,10 +19,13 @@ get your personal access token (see https://developer.github.com/v3/#authenticat
 
 ### Start application
 
-* Application is the main file.
-* for setting members list, set -DgithubReaderService.membersResource=file://[YOUR_PATH]
-* to get connection to your neo4j database, set password: -Dneo4j.password=[YOUR_PASSWORD]
-* set your access token by using -Dgithub.accessToken=[YOUR_ACCESS_TOKEN]
+* do gradle build
+* go into build/libs
+* do java -Dneo4j.password=[YOUR_PASSWORD] -jar github-reader-0.0.1-SNAPSHOT.jar
+
+For setting up the list of members, add
+* the path to your members list, i.e. -DgithubReaderService.membersResource=file://[YOUR_PATH]
+* your access token by using -Dgithub.accessToken=[YOUR_ACCESS_TOKEN]
 
 ### Fill database
 

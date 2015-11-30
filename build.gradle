@@ -13,7 +13,7 @@ apply plugin: 'groovy'
 apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'testaufgabe'
+    baseName = 'github-reader'
     version = '0.0.1-SNAPSHOT'
 }
 
