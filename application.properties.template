@@ -1,0 +1,12 @@
+# Configuration for the connection to your neo4j server
+neo4j.serverUrl=http://localhost:7474
+# Credentials
+neo4j.user=neo4j
+neo4j.password=neo4j
+
+# for loading member data please define the github resource
+githubReaderService.membersResource=https://api.github.com/orgs/github/members
+
+# for default access, you get 50 requests per seconds. Set your personal access token
+# to get 5000 requests.
+github.accessToken=
