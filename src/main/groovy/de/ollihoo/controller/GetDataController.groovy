@@ -7,17 +7,22 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
-class UpdateController {
+class GetDataController {
 
     @Autowired
     GithubReaderService githubReaderService
 
     @RequestMapping(value = "/internal/getdata", method = RequestMethod.GET)
-    String index(Model model) {
-        List<Employee> employees = githubReaderService.loadMembers()
-        model.addAttribute("employees", employees)
+    String index(@RequestParam(name = "organization", required = false) String organization,
+                 Model model) {
+        if (organization) {
+            List<Employee> employees = githubReaderService.loadMembers(organization)
+            model.addAttribute("employees", employees)
+            model.addAttribute("organization", organization)
+        }
         "getdata"
     }
 

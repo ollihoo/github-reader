@@ -9,7 +9,16 @@
 <body>
 <div class="container">
   <h2>Get Data From Github</h2>
-  <div th:each="employee, row: ${employees}" th:text="${employee.name}">Angestellter X</div>
+    <div th:if="${organization}">
+        <h3 th:text="${organization}"></h3>
+        <div th:each="employee, row: ${employees}" th:text="${employee.name}">Employee X</div>
+    </div>
+    <div th:unless="${organization}">
+       <form method="GET">
+           <input type="input" name="organization"/>
+           <button>Load Data</button>
+       </form>
+    </div>
 </div>
 
 </body>
