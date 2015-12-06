@@ -1,6 +1,7 @@
 package de.ollihoo.service
 
 import de.ollihoo.graphrepository.EmployeeRepository
+import de.ollihoo.graphrepository.OrganizationRepository
 import spock.lang.Specification
 
 class GithubReaderServiceSpec extends Specification {
@@ -9,38 +10,29 @@ class GithubReaderServiceSpec extends Specification {
 
     def setup() {
         githubReaderService = new GithubReaderService()
+        githubReaderService.organizationRepository = Mock(OrganizationRepository)
         githubReaderService.employeeRepository = Mock(EmployeeRepository)
+        githubReaderService.jsonRequestHelper = Mock(JsonRequestHelper)
     }
 
-    def "When no list is set, an empty list is returned" () {
+    def "When organization is null, an empty list is returned" () {
         when:
-        def members = githubReaderService.loadMembers()
+        def members = githubReaderService.loadMembers(null)
 
         then:
         members == []
     }
 
-    def "When list is set, but empty, an empty list is returned" () {
+    def "When organizazion is set, a request is done against github" () {
         given:
-        githubReaderService.membersResource = this.getClass().classLoader.getResource("noMembers.json")
+        githubReaderService.organizationRepository.findByName(_) >> []
 
         when:
-        def members = githubReaderService.loadMembers()
+        githubReaderService.loadMembers("anyOrg")
 
         then:
-        members == []
-    }
-
-    def "When list is set, it checks all given members against database" () {
-        given:
-        githubReaderService.membersResource = this.getClass().classLoader.getResource("members.json")
-
-        when:
-        def members = githubReaderService.loadMembers()
-
-        then:
-        1 * githubReaderService.employeeRepository.findByLogin("abc") >> []
-        1 * githubReaderService.employeeRepository.findByLogin("def") >> []
+        1 * githubReaderService.jsonRequestHelper.getAndParseJson(
+                "https://api.github.com/orgs/anyOrg/members")
     }
 
 
