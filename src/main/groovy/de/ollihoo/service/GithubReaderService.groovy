@@ -4,98 +4,74 @@ import de.ollihoo.domain.Employee
 import de.ollihoo.domain.Language
 import de.ollihoo.domain.Organization
 import de.ollihoo.domain.Repository
-import de.ollihoo.graphrepository.EmployeeRepository
-import de.ollihoo.graphrepository.LanguageRepository
-import de.ollihoo.graphrepository.OrganizationRepository
-import de.ollihoo.graphrepository.RepositoryRepository
-import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.*
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestTemplate
 
 @Service
 class GithubReaderService {
     private static final Logger LOG = LoggerFactory.getLogger(GithubReaderService)
 
     @Autowired
-    OrganizationRepository organizationRepository
-    @Autowired
-    EmployeeRepository employeeRepository
-    @Autowired
-    RepositoryRepository repositoryRepository
-    @Autowired
-    LanguageRepository languageRepository
-    @Autowired
     JsonRequestHelper jsonRequestHelper
+    @Autowired
+    OrganizationService organizationService
+    @Autowired
+    LanguageService languageService
+    @Autowired
+    RepositoryService repositoryService
+    @Autowired
+    EmployeeService employeeService
 
-    List<Employee> loadMembers(String organizationName) {
+    Organization loadOrganization(String organizationName) {
         String membersResource = "https://api.github.com/orgs/${organizationName}/members"
         LOG.info("Loading members from ${membersResource}...")
-        def members = jsonRequestHelper.getAndParseJson(membersResource)
+
         try {
-            def organization = organizationRepository.findByName(organizationName) ?:
-                    new Organization(name: organizationName)
-            organizationRepository.save(organization, 0)
-            List<Employee> employees = loadUnknownEmployees(members)
-            employees.each { employee ->
+            def members = jsonRequestHelper.getAndParseJson(membersResource)
+            Organization organization = organizationService.getOrCreateOrganization(organizationName)
+            getEmployees(organization, members)
+            organization
+        } catch (JsonHelperException e) {
+            LOG.warn("Could not parse data: ${e.message} - ${e.request}")
+            return null
+        }
+    }
+
+    private List<Employee> getEmployees(Organization organization, membersJson) {
+        membersJson.collect { memberJson ->
+            LOG.info("Start parsing data for memberJson ${memberJson.login}")
+            def employee = null
+            try {
+                def user = jsonRequestHelper.getAndParseJson(memberJson.url)
+                employee = employeeService.getOrCreateEmployee((String) user.login, user.name)
+                employee = employeeService.setRepositoriesAndLanguagesForEmployee(
+                        getUsersRepositories(user), employee)
+            } catch (JsonHelperException e) {
+                LOG.warn("getEmployees - could not parse data: ${e.message} - ${e.request}")
+            } finally {
                 organization.setEmployed(employee)
+                organizationService.updateOrganization(organization)
             }
-            organizationRepository.save(organization, 1)
-            employees
-        } catch (all) {
-            LOG.warn("Could not parse all data: ${all.message}")
-            return []
+            employee
         }
-    }
-
-    private List<Employee> loadUnknownEmployees(members) {
-        members.collect { member ->
-            LOG.info("Start parsing data for member ${member.login}")
-            parseEmployee(member)
-        }
-    }
-
-    private Employee parseEmployee(githubMemberJson) {
-        def user = jsonRequestHelper.getAndParseJson(githubMemberJson.url)
-        String name = user.name ?: user.login
-        def repositories = getUsersRepositories(user)
-        Employee employee = employeeRepository.findByName(name) ?: new Employee(name: name, login: user.login)
-        repositories.each { repository ->
-            employee.setWorksOn(repository)
-            repository.languages.each { language ->
-                employee.usesLanguage(language)
-            }
-        }
-        employeeRepository.save(employee, 1)
-        employee
     }
 
     private List<Repository> getUsersRepositories(githubUserJson) {
+        LOG.info("Start parsing repository data for user ${githubUserJson.login}")
         def repos = jsonRequestHelper.getAndParseJson(githubUserJson."repos_url")
-        def repositories = repos.collect { repo ->
-            def languages = getLanguages(repo)
-
-            def repository = repositoryRepository.findByName(repo.name) ?:
-                    new Repository(name: repo.name)
-            languages.each { language ->
-                repository.setImplementedIn(language)
-            }
-            repositoryRepository.save(repository, 1)
-            repository
+        repos.collect { repo ->
+            Repository repository = repositoryService.getOrInsertRepository(repo)
+            repositoryService.addLanguagesToRepository(getLanguages(repo), repository)
         }
-        repositories
     }
 
     private List<Language> getLanguages(githubRepositoryJson) {
+        LOG.info("Start parsing language data for repository ${githubRepositoryJson.name}")
         def languages = jsonRequestHelper.getAndParseJson(githubRepositoryJson."languages_url")
         languages.keySet().collect { languageName ->
-            languageRepository.findByName(languageName) ?:
-                    languageRepository.save(new Language(name: languageName), 0)
+            languageService.getOrInsertLanguage(languageName)
         }
     }
 

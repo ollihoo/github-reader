@@ -26,6 +26,7 @@ class JsonRequestHelper {
 
     public String doRequestOn(String resourceUri) throws HttpClientErrorException {
         def uri = resourceUri + (accessToken? "?access_token=$accessToken" : "")
+        try {
         RestTemplate restTemplate = new RestTemplate()
         HttpHeaders headers = new HttpHeaders()
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
@@ -33,6 +34,10 @@ class JsonRequestHelper {
 
         ResponseEntity response = restTemplate.exchange(uri, HttpMethod.GET, entity, String)
         response.getBody()
+        } catch (HttpClientErrorException e) {
+            throw new JsonHelperException(e, uri)
+
+        }
     }
 
 }
