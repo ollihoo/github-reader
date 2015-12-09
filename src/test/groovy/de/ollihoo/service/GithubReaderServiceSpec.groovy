@@ -1,6 +1,6 @@
 package de.ollihoo.service
 
-import de.ollihoo.domain.Organization
+import de.ollihoo.neo4jdomain.Organization
 import spock.lang.Specification
 
 class GithubReaderServiceSpec extends Specification {

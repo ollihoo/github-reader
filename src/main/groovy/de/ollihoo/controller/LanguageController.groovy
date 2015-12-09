@@ -1,6 +1,6 @@
 package de.ollihoo.controller
 
-import de.ollihoo.graphrepository.LanguageRepository
+import de.ollihoo.neo4j.LanguageRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

@@ -1,10 +1,5 @@
 package de.ollihoo.domain
 
-import org.springframework.data.neo4j.annotation.QueryResult
+public interface Qualifications {
 
-@QueryResult
-class Qualifications {
-    String employee
-    String language
-    Integer projectAmount
 }

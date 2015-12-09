@@ -1,7 +1,5 @@
 package de.ollihoo.controller
 
-import de.ollihoo.domain.Employee
-import de.ollihoo.domain.Organization
 import de.ollihoo.service.GithubReaderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller

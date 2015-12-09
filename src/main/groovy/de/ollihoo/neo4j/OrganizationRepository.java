@@ -1,6 +1,6 @@
-package de.ollihoo.graphrepository;
+package de.ollihoo.neo4j;
 
-import de.ollihoo.domain.Organization;
+import de.ollihoo.neo4jdomain.Organization;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 public interface OrganizationRepository extends GraphRepository<Organization> {
