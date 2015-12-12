@@ -1,9 +1,9 @@
 package de.ollihoo.service
 
-import de.ollihoo.neo4jdomain.Employee
-import de.ollihoo.neo4jdomain.Language
-import de.ollihoo.neo4jdomain.Organization
-import de.ollihoo.neo4jdomain.Repository
+import de.ollihoo.neo4j.domain.Employee
+import de.ollihoo.neo4j.domain.Language
+import de.ollihoo.neo4j.domain.Organization
+import de.ollihoo.neo4j.domain.Repository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

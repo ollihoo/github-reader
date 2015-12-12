@@ -1,4 +1,4 @@
-package de.ollihoo.neo4jdomain
+package de.ollihoo.neo4j.domain
 
 import org.neo4j.ogm.annotation.GraphId
 import org.neo4j.ogm.annotation.NodeEntity

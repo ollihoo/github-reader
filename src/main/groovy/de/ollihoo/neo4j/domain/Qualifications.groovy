@@ -1,4 +1,4 @@
-package de.ollihoo.neo4jdomain
+package de.ollihoo.neo4j.domain
 
 import org.springframework.data.neo4j.annotation.QueryResult
 

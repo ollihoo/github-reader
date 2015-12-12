@@ -1,6 +1,6 @@
 package de.ollihoo.controller
 
-import de.ollihoo.neo4j.EmployeeRepository
+import de.ollihoo.neo4j.repository.EmployeeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

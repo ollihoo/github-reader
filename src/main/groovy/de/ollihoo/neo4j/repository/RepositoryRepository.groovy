@@ -1,6 +1,6 @@
-package de.ollihoo.neo4j
+package de.ollihoo.neo4j.repository
 
-import de.ollihoo.neo4jdomain.Repository
+import de.ollihoo.neo4j.domain.Repository
 import org.springframework.data.neo4j.repository.GraphRepository
 
 interface RepositoryRepository extends GraphRepository<Repository> {

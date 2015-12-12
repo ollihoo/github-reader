@@ -15,7 +15,7 @@ import org.springframework.data.neo4j.server.RemoteServer
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
-@EnableNeo4jRepositories(basePackages = "de.ollihoo.neo4j")
+@EnableNeo4jRepositories(basePackages = "de.ollihoo.neo4j.repository")
 @EnableTransactionManagement
 @ConfigurationProperties
 class ApplicationConfiguration extends Neo4jConfiguration {
@@ -36,7 +36,7 @@ class ApplicationConfiguration extends Neo4jConfiguration {
 
     @Override @Bean
     SessionFactory getSessionFactory() {
-        new SessionFactory("de.ollihoo.neo4jdomain")
+        new SessionFactory("de.ollihoo.neo4j.domain")
     }
 
     @Bean

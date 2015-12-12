@@ -1,7 +1,7 @@
-package de.ollihoo.neo4j;
+package de.ollihoo.neo4j.repository;
 
-import de.ollihoo.neo4jdomain.Employee;
-import de.ollihoo.neo4jdomain.Qualifications;
+import de.ollihoo.neo4j.domain.Employee;
+import de.ollihoo.neo4j.domain.Qualifications;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 

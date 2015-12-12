@@ -1,7 +1,7 @@
 package de.ollihoo.service
 
-import de.ollihoo.neo4jdomain.Language
-import de.ollihoo.neo4j.LanguageRepository
+import de.ollihoo.neo4j.domain.Language
+import de.ollihoo.neo4j.repository.LanguageRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

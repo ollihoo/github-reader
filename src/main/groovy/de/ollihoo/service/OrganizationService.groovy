@@ -1,8 +1,8 @@
 package de.ollihoo.service
 
-import de.ollihoo.neo4jdomain.Employee
-import de.ollihoo.neo4jdomain.Organization
-import de.ollihoo.neo4j.OrganizationRepository
+import de.ollihoo.neo4j.domain.Employee
+import de.ollihoo.neo4j.domain.Organization
+import de.ollihoo.neo4j.repository.OrganizationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
