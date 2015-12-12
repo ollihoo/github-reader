@@ -1,6 +1,6 @@
-package de.ollihoo.orientdb
+package de.ollihoo.orientdb.repository
 
-import de.ollihoo.orientdomain.Repository
+import de.ollihoo.orientdb.orientdomain.Repository
 import org.springframework.data.gremlin.repository.GremlinRepository
 
 interface RepositoryRepository extends GremlinRepository<Repository> {

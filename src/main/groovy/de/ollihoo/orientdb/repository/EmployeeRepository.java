@@ -1,7 +1,7 @@
-package de.ollihoo.orientdb;
+package de.ollihoo.orientdb.repository;
 
-import de.ollihoo.orientdomain.Employee;
-import de.ollihoo.orientdomain.Qualifications;
+import de.ollihoo.orientdb.orientdomain.Employee;
+import de.ollihoo.orientdb.orientdomain.Qualifications;
 import org.springframework.data.gremlin.repository.GremlinRepository;
 import org.springframework.data.neo4j.annotation.Query;
 

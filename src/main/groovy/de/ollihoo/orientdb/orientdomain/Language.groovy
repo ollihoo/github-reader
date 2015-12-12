@@ -1,4 +1,4 @@
-package de.ollihoo.orientdomain
+package de.ollihoo.orientdb.orientdomain
 
 import org.springframework.data.gremlin.annotation.Id
 import org.springframework.data.gremlin.annotation.Property

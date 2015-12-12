@@ -1,7 +1,6 @@
-package de.ollihoo.orientdomain
+package de.ollihoo.orientdb.orientdomain
 
 import com.tinkerpop.blueprints.Direction
-import org.neo4j.ogm.annotation.Relationship
 import org.springframework.data.gremlin.annotation.Id
 import org.springframework.data.gremlin.annotation.Link
 import org.springframework.data.gremlin.annotation.Property

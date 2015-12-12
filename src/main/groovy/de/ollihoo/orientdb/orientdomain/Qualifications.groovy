@@ -1,6 +1,4 @@
-package de.ollihoo.orientdomain
-
-import org.springframework.data.neo4j.annotation.QueryResult
+package de.ollihoo.orientdb.orientdomain
 
 class Qualifications implements de.ollihoo.domain.Qualifications {
     String employee
