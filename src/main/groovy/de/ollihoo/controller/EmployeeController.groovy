@@ -1,6 +1,7 @@
 package de.ollihoo.controller
 
 import de.ollihoo.neo4j.repository.EmployeeRepository
+import de.ollihoo.neo4j.service.EmployeeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -11,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod
 class EmployeeController {
 
     @Autowired
-    EmployeeRepository employeeRepository
+    EmployeeService employeeService
 
     @RequestMapping(value = "/employees", method = RequestMethod.GET)
     def index(Model model) {
-        model.addAttribute("qualifications", employeeRepository.getQualification())
+        model.addAttribute("qualifications", employeeService.getQualification())
         "employee"
     }
 }

@@ -1,6 +1,7 @@
 package de.ollihoo.neo4j.service
 
 import de.ollihoo.neo4j.domain.Employee
+import de.ollihoo.neo4j.domain.Qualifications
 import de.ollihoo.neo4j.domain.Repository
 import de.ollihoo.neo4j.repository.EmployeeRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,10 @@ class EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository
+
+    Iterable<Qualifications> getQualification() {
+        employeeRepository.qualification
+    }
 
     Employee getOrCreateEmployee(String login, String userName) {
         String name = userName ?: login
