@@ -1,4 +1,4 @@
-package de.ollihoo.service
+package de.ollihoo.neo4j.service
 
 import de.ollihoo.neo4j.domain.Language
 import de.ollihoo.neo4j.domain.Repository

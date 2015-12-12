@@ -4,6 +4,10 @@ import de.ollihoo.neo4j.domain.Employee
 import de.ollihoo.neo4j.domain.Language
 import de.ollihoo.neo4j.domain.Organization
 import de.ollihoo.neo4j.domain.Repository
+import de.ollihoo.neo4j.service.EmployeeService
+import de.ollihoo.neo4j.service.LanguageService
+import de.ollihoo.neo4j.service.OrganizationService
+import de.ollihoo.neo4j.service.RepositoryService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
