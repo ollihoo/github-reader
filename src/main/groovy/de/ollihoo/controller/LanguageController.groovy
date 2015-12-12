@@ -1,6 +1,6 @@
 package de.ollihoo.controller
 
-import de.ollihoo.neo4j.repository.LanguageRepository
+import de.ollihoo.neo4j.service.LanguageService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam
 class LanguageController {
 
     @Autowired
-    LanguageRepository languageRepository
+    LanguageService languageService
 
     @RequestMapping(value = "/language", method = RequestMethod.GET)
     def index(@RequestParam(name="language", required = false) String language, Model model) {
         if (language) {
-            model.addAttribute("qualifications", languageRepository.getLanguagesOrderedByQualification(language))
+            model.addAttribute("qualifications", languageService.getLanguagesOrderedByQualification(language))
             return "language"
         }
         return "languagestart"
